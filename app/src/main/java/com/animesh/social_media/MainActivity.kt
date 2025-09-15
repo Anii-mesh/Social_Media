@@ -1,24 +1,33 @@
 package com.animesh.social_media
 
+import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.animesh.social_media.Authentication.LoginActivity
 import com.animesh.social_media.Fragments.AddFragment
 import com.animesh.social_media.Fragments.HomeFragment
 import com.animesh.social_media.Fragments.NotificationFragment
 import com.animesh.social_media.Fragments.ProfileFragment
 import com.animesh.social_media.Fragments.SearchFragment
 import com.animesh.social_media.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var viewBinding : ActivityMainBinding
+    lateinit var firebaseAuth : FirebaseAuth
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +38,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        firebaseAuth = FirebaseAuth.getInstance()
 
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
@@ -79,6 +89,33 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.top_menu_item,menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.setting -> {
+                firebaseAuth.signOut()
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            }
+        }
+        return true
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.action == MotionEvent.ACTION_DOWN) {
+            val v = currentFocus
+            if (v is EditText) {
+                val outRect = Rect()
+                v.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
+                    v.clearFocus()
+                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.windowToken, 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
 }
