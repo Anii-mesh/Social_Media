@@ -46,6 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
+        android:background="@drawable/icon_background"
         android:src="@drawable/ic_image"
         app:layout_constraintBottom_toBottomOf="@+id/coverLayout"
         app:layout_constraintStart_toStartOf="@+id/coverLayout" />
@@ -192,7 +193,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/follower"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="420"
@@ -297,7 +298,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/acme"
-        android:text="My Friends"
+        android:text="My Follower"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/textView12"

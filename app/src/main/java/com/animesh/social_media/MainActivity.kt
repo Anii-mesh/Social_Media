@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.animesh.social_media.Authentication.LoginActivity
 import com.animesh.social_media.Fragments.AddFragment
+import com.animesh.social_media.Fragments.AddPostFragment
 import com.animesh.social_media.Fragments.HomeFragment
 import com.animesh.social_media.Fragments.NotificationFragment
 import com.animesh.social_media.Fragments.ProfileFragment
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                     viewBinding.toolbar.visibility = View.GONE
                 }
                 R.id.nav_add -> {
-                    loadFragment(AddFragment())
+                    loadFragment(AddPostFragment())
                     viewBinding.toolbar.visibility = View.GONE
                 }
                 R.id.nav_search -> {

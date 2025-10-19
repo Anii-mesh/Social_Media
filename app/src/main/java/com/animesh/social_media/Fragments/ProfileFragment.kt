@@ -96,6 +96,7 @@ class ProfileFragment : Fragment() {
 
                     binding.userName.text = user.name
                     binding.profession.text = user.profession
+                    binding.follower.text = user.followerCount.toString()
 
                     Glide.with(requireContext())
                         .load(user.coverPhoto)
@@ -107,7 +108,6 @@ class ProfileFragment : Fragment() {
                         .placeholder(R.drawable.profile)
                         .into(binding.imageProfile)
                 }
-
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
@@ -127,11 +127,9 @@ class ProfileFragment : Fragment() {
                 }
                 followerAdapter.notifyDataSetChanged()
             }
-
             override fun onCancelled(error: DatabaseError) {}
         })
     }
-
 
     private fun uploadImage(uid: String, type: String, uri: Uri) {
         val storageRef: StorageReference = firebaseStorage.getReference().child(type).child(uid)
@@ -145,7 +143,7 @@ class ProfileFragment : Fragment() {
         val bitmap = getCorrectlyOrientedBitmap(requireContext(), uri) ?: return
 
         val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
         val compressedData = baos.toByteArray()
 
         storageRef.putBytes(compressedData)

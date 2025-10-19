@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "Your project number",
-    "project_id": "YOUR PROJECT ID ",
-    "storage_bucket": "YOUR STORAGE BUCKET"
+    "project_number": "YOUR_PROJECT_NUMBER",
+    "project_id": "YOUR_PROJECT_ID",
+    "storage_bucket": "YOUR_STORAGE_BUCKET"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "MY SDK",
+        "mobilesdk_app_id": "YOUR_APP_ID",
         "android_client_info": {
-          "package_name": "MY PACKAGE"
+          "package_name": "com.animesh.social_media"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "MY KEY NAME"
+          "current_key": "YOUR_KEY"
         }
       ],
       "services": {

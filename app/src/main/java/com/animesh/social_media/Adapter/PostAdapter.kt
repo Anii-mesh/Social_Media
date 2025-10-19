@@ -4,14 +4,16 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.animesh.social_media.Model.dashboardModel
+import com.animesh.social_media.Model.Post
+import com.animesh.social_media.R
 import com.animesh.social_media.databinding.DashboradRvSampleBinding
+import com.bumptech.glide.Glide
 
 
-class DashboardAdapter(
-    private val dashboardList: List<dashboardModel>,
+class PostAdapter(
+    private val dashboardList: List<Post>,
     requireContext: Context
-) : RecyclerView.Adapter<DashboardAdapter.DashboardViewHolder>() {
+) : RecyclerView.Adapter<PostAdapter.DashboardViewHolder>() {
 
     inner class DashboardViewHolder(val binding: DashboradRvSampleBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -22,16 +24,12 @@ class DashboardAdapter(
     }
 
     override fun onBindViewHolder(holder: DashboardViewHolder, position: Int) {
-        val currentItem = dashboardList[position]
+        val post = dashboardList[position]
+        Glide.with(holder.itemView.context)
+            .load(post.postImage)
+            .placeholder(R.drawable.placeholder)
+            .into(holder.binding.postImg)
 
-        holder.binding.imageProfile.setImageResource(currentItem.profile)
-        holder.binding.postImg.setImageResource(currentItem.postImage)
-        holder.binding.save.setImageResource(currentItem.save)
-        holder.binding.name1.text = currentItem.name1
-        holder.binding.about.text = currentItem.about
-        holder.binding.like.text = currentItem.like
-        holder.binding.comment.text = currentItem.comment
-        holder.binding.share.text = currentItem.share
     }
 
     override fun getItemCount(): Int = dashboardList.size

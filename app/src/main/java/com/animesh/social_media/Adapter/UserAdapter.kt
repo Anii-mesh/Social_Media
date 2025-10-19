@@ -10,7 +10,10 @@ import com.animesh.social_media.R
 import com.animesh.social_media.databinding.UserSampleBinding
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.time.Clock.system
 import java.util.Date
 
@@ -41,25 +44,48 @@ class UserAdapter(private val userList: MutableList<User>, private val following
         holder.binding.name.text = user.name
         holder.binding.profession.text = user.profession
 
-
-        holder.binding.btnFollow.setOnClickListener {
-            val follow = FollowModel(
-                followedBy = currentUid,
-                followedAt = Date().time
-            )
-            FirebaseDatabase.getInstance().getReference("users")
-                .child(clickedUserId)
-                .child("followers")
-                .child(currentUid)
-                .setValue(follow).addOnSuccessListener {
-                    FirebaseDatabase.getInstance().getReference("users")
-                        .child(user.uid)
-                        .child("followerCount")
-                        .setValue(user.followerCount +1 ).addOnSuccessListener {
-                            Toast.makeText(context, "You Followed ${user.name}", Toast.LENGTH_SHORT).show()
+        FirebaseDatabase.getInstance().getReference("users")
+            .child(clickedUserId)
+            .child("followers")
+            .child(currentUid).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()){
+                        holder.binding.btnFollow.setBackgroundResource(R.drawable.follow_active_btn)
+                        holder.binding.btnFollow.text = "Following"
+                        holder.binding.btnFollow.setTextColor(context.getColor(R.color.grey))
+                        holder.binding.btnFollow.isEnabled = false
+                    }else{
+                        holder.binding.btnFollow.setOnClickListener {
+                            val follow = FollowModel(
+                                followedBy = currentUid,
+                                followedAt = Date().time
+                            )
+                            FirebaseDatabase.getInstance().getReference("users")
+                                .child(clickedUserId)
+                                .child("followers")
+                                .child(currentUid)
+                                .setValue(follow).addOnSuccessListener {
+                                    FirebaseDatabase.getInstance().getReference("users")
+                                        .child(user.uid)
+                                        .child("followerCount")
+                                        .setValue(user.followerCount +1 ).addOnSuccessListener {
+                                            holder.binding.btnFollow.setBackgroundResource(R.drawable.follow_active_btn)
+                                            holder.binding.btnFollow.text = "Following"
+                                            holder.binding.btnFollow.setTextColor(context.getColor(R.color.grey))
+                                            holder.binding.btnFollow.isEnabled = false
+                                            Toast.makeText(context, "You Followed ${user.name}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
                         }
+                    }
                 }
-        }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+
     }
 
     override fun getItemCount(): Int = userList.size

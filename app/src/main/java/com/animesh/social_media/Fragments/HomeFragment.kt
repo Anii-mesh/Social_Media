@@ -7,11 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.animesh.social_media.Adapter.DashboardAdapter
+import com.animesh.social_media.Adapter.PostAdapter
 import com.animesh.social_media.Adapter.StoryAdapter
 import com.animesh.social_media.Model.StoryModel
-import com.animesh.social_media.Model.dashboardModel
+import com.animesh.social_media.Model.Post
 import com.animesh.social_media.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
 class HomeFragment : Fragment() {
@@ -20,7 +25,12 @@ class HomeFragment : Fragment() {
     lateinit var storyList: ArrayList<StoryModel>
 
     lateinit var dashboardRv: RecyclerView
-    lateinit var dashboardList: ArrayList<dashboardModel>
+    lateinit var postList: ArrayList<Post>
+
+    lateinit var database : FirebaseDatabase
+    lateinit var auth : FirebaseAuth
+
+    private lateinit var postAdapter : PostAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,11 +40,14 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreateView(
+
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+        database = FirebaseDatabase.getInstance()
+        auth = FirebaseAuth.getInstance()
 
         storyRv = view.findViewById(R.id.storyRV)
         storyList = ArrayList()
@@ -53,14 +66,26 @@ class HomeFragment : Fragment() {
         storyRv.isNestedScrollingEnabled = false
 
         dashboardRv = view.findViewById(R.id.dashboardRv)
-        dashboardList = ArrayList()
-        dashboardList.add(dashboardModel(R.drawable.profile, R.drawable.p1, R.drawable.ic_bookmark, "Animesh", "About Animesh", "1k", "5","20"))
-        dashboardList.add(dashboardModel(R.drawable.profile, R.drawable.p2, R.drawable.ic_bookmark, "Rohit", "About Rohit", "2.3k","5","40"))
-        dashboardList.add(dashboardModel(R.drawable.profile, R.drawable.p3, R.drawable.ic_bookmark, "Shivam", "About Shivam", "500","4","15"))
+        postList = ArrayList()
+        postAdapter = PostAdapter(postList, requireContext())  // ✅ Initialize here
+        dashboardRv.layoutManager = LinearLayoutManager(requireContext())
+        dashboardRv.adapter = postAdapter
 
-        val dashboardLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        dashboardRv.layoutManager = dashboardLayoutManager
-        dashboardRv.adapter = DashboardAdapter(dashboardList, requireContext())
+        database.getReference().child("posts").addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(snapshot1 in snapshot.children){
+                    val post: Post = snapshot1.getValue(Post::class.java) as Post
+                    postList.add(post)
+                }
+                postAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+
         dashboardRv.isNestedScrollingEnabled = false
 
         return (view)

@@ -9,4 +9,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="close">Close</string>
+    <string name="new_post">New Post</string>
+    <string name="post">Post</string>
+    <string name="write_a_caption">Write a caption...</string>
+    <string name="post_image_preview">Post image preview</string>
+    <string name="tag_people">Tag People</string>
+    <string name="add_location">Add Location</string>
+
 </resources>
